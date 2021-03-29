@@ -1,20 +1,13 @@
 import unittest
 import central_system
-
+from POD import POD
 import sys
 import filecmp
 from multiprocessing import Process
 
-timeout = 100
-winsize = 100
-intf = "lo"
-netem_add = "sudo tc qdisc add dev {} root netem".format(intf)
-netem_change = "sudo tc qdisc change dev {} root netem {}".format(intf, "{}")
-netem_del = "sudo tc qdisc del dev {} root netem".format(intf)
-
+central_create = "python central_system.py"
 
 """run command and retrieve output"""
-
 
 def run_command_with_output(command, input=None, cwd=None, shell=True):
     import subprocess
@@ -32,9 +25,7 @@ def run_command_with_output(command, input=None, cwd=None, shell=True):
 
     return stdoutdata
 
-
 """run command with no output piping"""
-
 
 def run_command(command, cwd=None, shell=True):
     import subprocess
@@ -51,53 +42,41 @@ def run_command(command, cwd=None, shell=True):
         print("2. problem running command : \n   ", str(command), " ", process.returncode)
 
 
-class TestbTCPFramework(unittest.TestCase):
-    """Test cases for bTCP"""
+class TestFramework(unittest.TestCase):
+    """Test cases for the protocol"""
 
     def setUp(self):
         """Prepare for testing"""
         # default netem rule (does nothing)
         print("------------------------------------------")
-        run_command(netem_add)
         # launch localhost server
-        self.server_process = Process(target=server_app.main, args=(winsize, timeout, output_file))
+        self.server_process = Process(target=central_system.main)
         self.server_process.start()
 
     def tearDown(self):
         """Clean up after testing"""
         # clean the environment
-        run_command(netem_del)
         # close server
+        self.server_process.kill()
         # already closed
         print("------------------------------------------")
 
-    def test_ideal_network(self):
-        """reliability over an ideal framework"""
-        # setup environment (nothing to set)
+    def test_pod_id(self):
 
+        # create classes
+        
+        # pod_process = Process(target=request_id.main)
+ 
+        pod = POD('xd')
+        
         # launch localhost client connecting to server
-        print()
-        print("Case 'test_ideal_network':")
-        client_process = Process(target=client_app.main, args=(winsize, timeout, input_file))
-        # client sends content to server
-        client_process.start()
-        # server receives content from client
-        client_process.join()
-        self.server_process.join()
-        # content received by server matches the content sent by client
-        if filecmp.cmp(input_file, output_file):
-            self.assertTrue(True)
-            print("Test ended successfully!")
-            print()
-        else:
-            self.assertTrue(False)
-            print("Something went wrong!")
-            print()
+        self.assertEqual('asdsahudiah', pod.ID)
+       
 
 if __name__ == "__main__":
     # Parse command line arguments
     import argparse
-
+    
     parser = argparse.ArgumentParser(description="bTCP tests")
     parser.add_argument("-w", "--window", help="Define bTCP client window size used", type=int, default=50)
     parser.add_argument("-t", "--timeout", help="Define the client/server timeout value used (ms)", type=int, default=700)

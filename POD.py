@@ -11,8 +11,8 @@ class POD:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect(('127.0.0.1', 65432))
                 s.sendall(('ASK_ID ' + location + '\n\n').encode('utf-8'))
-                data = s.recv(1024)
-        print(repr(data))
+                data = s.recv(1024).decode('utf-8')
+        # print(repr(data))
         return data
     
     def send_location(self, location):

@@ -1,5 +1,8 @@
-import POD
+from POD import POD
 
-pod = pod.POD('xd')
+if __name__ == "__main__":
+    pod = POD('xd')
+    print(pod.ID)
+    
 
-print(pod.location, pod.ID)
+
