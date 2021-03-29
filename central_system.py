@@ -13,6 +13,7 @@ PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
 next_id = 0
 def gen_id():
+    global next_id
     rand_ids = ['asdsahudiah', 'btuirebfewlfk ewl', 'dsdsadew']
     next_id += 1
     return rand_ids[next_id-1]
@@ -46,7 +47,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 if res[7:] not in stop_ids:
                     next_stop = -1
                 else:
-                    next_stop = stop_ids.find(res[7:])
+                    next_stop = res[7:]
                 
                 if next_stop == -1:
                     # bus stop not found
@@ -56,7 +57,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     current_loc[ID] = next_stop
                     
                     # success
-                    conn.sendall('REGISTRATION_SUCCESSFUL')
+                    conn.sendall(('REGISTRATION_SUCCESSFUL ' + ID).encode('UTF-8'))
 
             else:
                 # otherwise: request from bus stop
@@ -73,5 +74,3 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         to_stop[stop_ids.index(station_id)] = 0
                     conn.sendall('ADDED'.encode('utf-8'))
 
-        print(station_id)
-        print(to_stop)
