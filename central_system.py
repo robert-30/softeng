@@ -1,6 +1,8 @@
 
 stops = ['Centraal Station', 'Station Heyendaal-1', 'Huygensgebouw', 'Erasmus', 'Spinozegebouw', 'Radboud/UMC', 'HAN', 'Station Heyendaal-2']
 stop_ids = ['ad', 'bd', 'cd', 'ed', 'fd', 'gf', 'hd', 'xd']
+serial_numbers = ['ASDDEA', 'ADEFFAQ', 'XDDD']
+LOCATION = {'ASDDEA': 'ad', 'ADEFFAQ': gf, 'XDDD': 'xd'}
 
 # keep track of location for each pod
 to_stop_pods = {}
@@ -41,17 +43,19 @@ def main():
                     # the rest of the request should be the ID of the next stop the POD will arrive at
 
                     ID = gen_id()
-                
-                    next_stop = -1
-                    if res[7:] not in stop_ids:
-                        next_stop = -1
+                    
+                    
+                    serial_number = -1
+                    if res[7:] not in serial_numbers:
+                        serial_number = -1
                     else:
-                        next_stop = res[7:]
+                        serial_number = res[7:]
                 
-                    if next_stop == -1:
-                        # bus stop not found
-                        conn.sendall('ERR_LOCATION_NOT_FOUND'.encode('UTF-8'))
+                    if serial_number == -1:
+                        # serial number not found
+                        conn.sendall('ERR_SERIAL_NUMBER_NOT_FOUND'.encode('UTF-8'))
                     else:
+                        next_stop = LOCATION[serial_number]
                         to_stop_pods[ID] = [0]*len(stops)
                         current_loc[ID] = next_stop
                     
@@ -60,7 +64,7 @@ def main():
 
                 elif res[:7] == 'NXT_STP':
                     ID = -1
-                    if ID[7:] not in stop_ids:
+                    if ID[8:] not in stop_ids:
                         ID = -1
                     else:
                         ID = res[7:]

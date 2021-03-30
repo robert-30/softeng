@@ -68,7 +68,7 @@ class TestFramework(unittest.TestCase):
 
     def test_pod_id(self):
         # create classes
-        pod = POD('xd')
+        pod = POD('XDDD')
         
         # check if the ID is right
         self.assertEqual('asdsahudiah', pod.ID)
