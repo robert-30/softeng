@@ -58,6 +58,31 @@ def main():
                         # success
                         conn.sendall((ID).encode('UTF-8'))
 
+                elif res[:7] == 'NXT_STP':
+                    ID = -1
+                    if ID[7:] not in stop_ids:
+                        ID = -1
+                    else:
+                        ID = res[7:]
+                    
+                    if ID == -1:
+                        # ID not found
+                        conn.sendall('ERR_ID_NOT_FOUND'.encode('UTF-8'))
+                    else:
+                        cur_stop = current_loc[ID]
+                        cur_stop_i = 0
+                        for i in range(len(stop_ids)):
+                            cur_stop_i = i
+                            if cur_stop == stop_ids[i]:
+                                break
+                        next_stop_name = 'NOWHERE_NEXT'
+                        for j in range(len(stop_ids)):
+                            if to_stop_pods[ID][(j+cur_stop_i) % len(stop_ids)] == 1:
+                                next_stop_name = stops[j]
+                                break
+                        # success
+                        conn.sendall((next_stop_name).encode('UTF-8'))
+                    
                 else:
                     # otherwise: request from bus stop
                     got_off = 0
