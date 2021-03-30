@@ -3,6 +3,7 @@ import central_system
 from POD import POD
 import sys
 import filecmp
+import time
 from multiprocessing import Process
 
 central_create = "python central_system.py"
@@ -45,33 +46,45 @@ def run_command(command, cwd=None, shell=True):
 class TestFramework(unittest.TestCase):
     """Test cases for the protocol"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         """Prepare for testing"""
         # default netem rule (does nothing)
-        print("------------------------------------------")
+        print("----------------setup--------------------------")
         # launch localhost server
         self.server_process = Process(target=central_system.main)
         self.server_process.start()
+        time.sleep(0.1)
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         """Clean up after testing"""
         # clean the environment
         # close server
+        
         self.server_process.kill()
         # already closed
-        print("------------------------------------------")
+        print("-------------------teardown-----------------------")
 
     def test_pod_id(self):
-
         # create classes
-        
-        # pod_process = Process(target=request_id.main)
- 
         pod = POD('xd')
         
-        # launch localhost client connecting to server
+        # check if the ID is right
         self.assertEqual('asdsahudiah', pod.ID)
-       
+        
+    def test_bus_stop(self):
+        # create classes
+        station1 = Station('Centraal Station', 'ad')
+        pod = POD('xd')
+        
+        # ask for a POD
+        station1.callshuttle()
+        
+        
+        self.assertEqual('asdsahudiah', pod.ID)
+        
+    
 
 if __name__ == "__main__":
     # Parse command line arguments

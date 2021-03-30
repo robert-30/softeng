@@ -22,12 +22,10 @@ def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
         s.listen()
-    
         while True:
             res = ''
             conn, addr = s.accept()
             with conn:
-                print('Connected by', addr)
                 while True:
                     data = conn.recv(1024)
                     res += data.decode('utf8')
@@ -74,4 +72,5 @@ def main():
                         else:
                             to_stop[stop_ids.index(station_id)] = 0
                         conn.sendall('ADDED'.encode('utf-8'))
+               
 
