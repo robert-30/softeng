@@ -1,5 +1,4 @@
 import socket
-import NameError
 
 
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)

@@ -1,6 +1,7 @@
 import unittest
-import central_system
+from central_system import Central_system
 from POD import POD
+from station import Station
 import sys
 import filecmp
 import time
@@ -51,8 +52,10 @@ class TestFramework(unittest.TestCase):
         """Prepare for testing"""
         # default netem rule (does nothing)
         print("----------------setup--------------------------")
-        # launch localhost server
-        self.server_process = Process(target=central_system.main)
+        
+        self.central_system = Central_system()
+        # launch cenetral_system
+        self.server_process = Process(target=self.central_system.server)
         self.server_process.start()
         time.sleep(0.1)
 
@@ -73,17 +76,26 @@ class TestFramework(unittest.TestCase):
         # check if the ID is right
         self.assertEqual('asdsahudiah', pod.ID)
         
-    def test_bus_stop(self):
+ #   def test_bus_stop(self):
+        # create classes
+  #      station1 = Station('Centraal Station', 'ad')
+   #     pod = POD('xd')
+        
+        # ask for a POD
+    #    station1.callshuttle()
+        
+        
+     #   self.assertEqual('asdsahudiah', pod.ID)
+        
+    def test_stoping_list(self):
         # create classes
         station1 = Station('Centraal Station', 'ad')
-        pod = POD('xd')
+        station2 = Station('Station Heyendaal-1', 'bd')
         
         # ask for a POD
         station1.callshuttle()
-        
-        
-        self.assertEqual('asdsahudiah', pod.ID)
-        
+        station2.callshuttle()
+        print("the list ",self.central_system.to_stop_pods)
     
 
 if __name__ == "__main__":
