@@ -6,6 +6,7 @@ import sys
 import filecmp
 import time
 from multiprocessing import Process
+from multiprocessing import shared_memory
 
 central_create = "python central_system.py"
 
@@ -90,12 +91,15 @@ class TestFramework(unittest.TestCase):
     def test_stoping_list(self):
         # create classes
         station1 = Station('Centraal Station', 'ad')
-        station2 = Station('Station Heyendaal-1', 'bd')
+        #station2 = Station('Station Heyendaal-1', 'bd')
+        
+        # launch cenetral_system
         
         # ask for a POD
         station1.callshuttle()
-        station2.callshuttle()
-        print("the list ",self.central_system.to_stop_pods)
+        self.server_process.join(1)
+        #station2.callshuttle()
+        print("the list ", self.central_system.get_to_stop())
     
 
 if __name__ == "__main__":
